@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-  import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Ensure you import styles
 
+// Components
 import Header from './components/Header';
 import Footer from './components/Footer';
 
+// Pages
 import Home from './Pages/Home';
 import Products from './Pages/Products';
 import About from './Pages/About';
@@ -14,38 +17,31 @@ import View from './Pages/View';
 import Tickets from './Pages/Tickets';
 
 function App() {
-  const [cart, setCart] = useState([]);
-
-  const addToCart = (item) => {
-    setCart([...cart, item]);
-  };
-
-  const removeFromCart = (id) => {
-    setCart(cart.filter(item => item.id !== id));
-  };
-
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <BrowserRouter>
         <Header />
-<ToastContainer
-position="top-right"
-autoClose={3000}
 
-theme="colored"
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          theme="colored"
+        />
 
-/>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/Products" element={<Products />} />
-          <Route path="/About" element={<About />} />
-          <Route path="/Contact" element={<Contact />} />
-          <Route path="/Cart" element={<Cart />} />
-          <Route path="/view" element={<View />} />
-          <Route path="/tickets" element={<Tickets />} />
-        </Routes>
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/view" element={<View />} />
+            <Route path="/tickets" element={<Tickets />} />
+          </Routes>
+        </main>
+
+        <Footer />
       </BrowserRouter>
-      <Footer />
     </div>
   );
 }

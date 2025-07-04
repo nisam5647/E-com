@@ -103,22 +103,22 @@ function Products() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-blue-100 px-6 py-10">
+    <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-blue-100 px-4 py-10">
       <h1 className="text-4xl font-bold text-center text-blue-700 mb-10">Gadgets</h1>
 
-      {/* Search & Filter Controls */}
+      {/* Search & Filter */}
       <div className="max-w-4xl mx-auto mb-8 flex flex-col sm:flex-row gap-4 justify-between items-center">
         <input
           type="text"
           placeholder="Search by name..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full sm:w-auto px-4 py-2 border rounded shadow"
+          className="w-full sm:w-1/2 px-4 py-2 border rounded"
         />
         <select
           value={priceFilter}
           onChange={(e) => setPriceFilter(e.target.value)}
-          className="w-full sm:w-auto px-4 py-2 border rounded shadow"
+          className="w-full sm:w-1/2 px-4 py-2 border rounded"
         >
           <option value="">All Prices</option>
           <option value="500">Under ₹500</option>
@@ -126,8 +126,8 @@ function Products() {
         </select>
       </div>
 
-      {/* Product Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+      {/* Products */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
         {visibleProducts.map(product => {
           const isInCart = cartItems.some(item => item.id === product.id);
           return (
@@ -147,8 +147,10 @@ function Products() {
                 <button
                   onClick={(e) => addToCart(e, product)}
                   disabled={isInCart}
-                  className={`mt-2 w-full py-2 rounded transition ${
-                    isInCart ? "bg-blue-600 text-white cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"
+                  className={`mt-2 w-full py-2 rounded ${
+                    isInCart
+                      ? "bg-blue-600 text-white cursor-not-allowed"
+                      : "bg-blue-600 text-white hover:bg-blue-700"
                   }`}
                 >
                   {isInCart ? "Added" : "Add to Cart"}
@@ -159,13 +161,13 @@ function Products() {
         })}
       </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       <div className="flex justify-center mt-10 gap-4">
         <button
           disabled={currentPage === 1}
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           className={`px-4 py-2 rounded ${
-            currentPage === 1 ? 'bg-gray-300' : 'bg-blue-600 text-white hover:bg-blue-700'
+            currentPage === 1 ? "bg-gray-300" : "bg-blue-600 text-white hover:bg-blue-700"
           }`}
         >
           Previous
@@ -174,14 +176,14 @@ function Products() {
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
           className={`px-4 py-2 rounded ${
-            currentPage === totalPages ? 'bg-gray-300' : 'bg-blue-600 text-white hover:bg-blue-700'
+            currentPage === totalPages ? "bg-gray-300" : "bg-blue-600 text-white hover:bg-blue-700"
           }`}
         >
           Next
         </button>
       </div>
 
-      {/* Admin Form */}
+      {/* Admin Product Form */}
       <div className="mt-16 max-w-2xl mx-auto bg-white p-6 rounded shadow">
         <h2 className="text-2xl font-semibold mb-4 text-gray-700">
           {editIndex !== null ? '✏️ Edit Product' : '➕ Add New Product'}
@@ -196,7 +198,7 @@ function Products() {
           />
           <input
             type="text"
-            placeholder="Price (e.g. $99.99)"
+            placeholder="Price (e.g. ₹999)"
             value={form.price}
             onChange={(e) => setForm({ ...form, price: e.target.value })}
             className="border p-2 rounded"

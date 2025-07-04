@@ -14,37 +14,35 @@ function Tickets() {
   }, []);
 
   return (
-    <div style={{ maxWidth: '900px', margin: '50px auto', padding: '20px' }}>
-      <h2 style={{
-        textAlign: 'center',
-        marginBottom: '30px',
-        fontSize: '2rem',
-        color: '#333',
-        borderBottom: '2px solid #eee',
-        paddingBottom: '10px'
-      }}>
-        Submitted Tickets
-      </h2>
+    <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-blue-100 py-10 px-4">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-3xl font-bold text-center text-blue-700 mb-8 border-b pb-2">
+          📨 Submitted Tickets
+        </h2>
 
-      {tickets.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#666' }}>No tickets found.</p>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {tickets.map((ticket) => (
-            <div key={ticket.id} style={{
-              backgroundColor: '#fff',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-              padding: '20px',
-              borderRadius: '10px',
-              borderLeft: '5px solid #4CAF50'
-            }}>
-              <p><strong style={{ color: '#333' }}>Name:</strong> {ticket.name}</p>
-              <p><strong style={{ color: '#333' }}>Email:</strong> {ticket.email}</p>
-              <p><strong style={{ color: '#333' }}>Message:</strong> {ticket.message}</p>
-            </div>
-          ))}
-        </div>
-      )}
+        {tickets.length === 0 ? (
+          <p className="text-center text-gray-500 text-lg">No tickets found.</p>
+        ) : (
+          <div className="space-y-6">
+            {tickets.map((ticket) => (
+              <div
+                key={ticket.id}
+                className="bg-white border-l-4 border-green-500 shadow-md rounded-lg p-6"
+              >
+                <p className="text-lg">
+                  <span className="font-semibold text-gray-700">👤 Name:</span> {ticket.name}
+                </p>
+                <p className="text-lg">
+                  <span className="font-semibold text-gray-700">📧 Email:</span> {ticket.email}
+                </p>
+                <p className="text-lg">
+                  <span className="font-semibold text-gray-700">💬 Message:</span> {ticket.message}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
