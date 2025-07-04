@@ -88,7 +88,7 @@ const View = () => {
                 : 'bg-blue-600 text-white hover:bg-blue-700'
             }`}
           >
-            {isInCart ? 'Added to Cart' : 'Add to Cart'}
+            {isInCart ? 'Added' : 'Add to Cart'}
           </button>
         </div>
       </div>
