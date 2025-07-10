@@ -1,35 +1,74 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { db, collection, addDoc, getDocs } from '../firebase';
+import { db, collection, addDoc, getDocs, deleteDoc, updateDoc, doc } from '../firebase';
+import { FaShoppingCart, FaHeart, FaRegHeart } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 const View = () => {
   const location = useLocation();
   const { itemdata } = location.state;
 
-  const [quantity, setQuantity] = useState(1);
-  const [isInCart, setIsInCart] = useState(false);
+  const [quantity, setQuantity] = useState(0);
+  const [cartId, setCartId] = useState(null);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [wishlistId, setWishlistId] = useState(null);
 
   const priceValue = parseFloat(itemdata.price.replace(/[^0-9.]/g, '')) || 0;
-  const totalPrice = (priceValue * quantity).toFixed(2);
+  const totalPrice = (priceValue * (quantity || 1)).toFixed(2);
 
+  // Check cart and wishlist on mount
   useEffect(() => {
-    const checkCart = async () => {
-      const snapshot = await getDocs(collection(db, 'cart'));
-      const items = snapshot.docs.map(doc => doc.data());
-      const found = items.some(item => item.id === itemdata.id);
-      setIsInCart(found);
+    const checkData = async () => {
+      const cartSnap = await getDocs(collection(db, 'cart'));
+      const cartItems = cartSnap.docs.map(doc => ({
+        firestoreId: doc.id,
+        ...doc.data()
+      }));
+      const cartItem = cartItems.find(item => item.id === itemdata.id);
+      if (cartItem) {
+        setQuantity(cartItem.quantity);
+        setCartId(cartItem.firestoreId);
+      }
+
+      const wishSnap = await getDocs(collection(db, 'wishlist'));
+      const wishItems = wishSnap.docs.map(doc => ({
+        firestoreId: doc.id,
+        ...doc.data()
+      }));
+      const wishItem = wishItems.find(item => item.id === itemdata.id);
+      if (wishItem) {
+        setIsInWishlist(true);
+        setWishlistId(wishItem.firestoreId);
+      }
     };
-    checkCart();
+
+    checkData();
   }, [itemdata.id]);
 
-  const increment = () => setQuantity(prev => prev + 1);
-  const decrement = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
-
   const handleAddToCart = async () => {
-    if (!isInCart) {
-      const productWithQuantity = { ...itemdata, quantity };
-      await addDoc(collection(db, 'cart'), productWithQuantity);
-      setIsInCart(true);
+    if (cartId) {
+      await updateDoc(doc(db, 'cart', cartId), { quantity: quantity + 1 });
+      setQuantity(prev => prev + 1);
+      toast.success('Quantity updated');
+    } else {
+      const newDoc = await addDoc(collection(db, 'cart'), { ...itemdata, quantity: 1 });
+      setCartId(newDoc.id);
+      setQuantity(1);
+      toast.success('Product added to cart');
+    }
+  };
+
+  const toggleWishlist = async () => {
+    if (isInWishlist && wishlistId) {
+      await deleteDoc(doc(db, 'wishlist', wishlistId));
+      setIsInWishlist(false);
+      setWishlistId(null);
+      toast.info('Removed from wishlist');
+    } else {
+      const newDoc = await addDoc(collection(db, 'wishlist'), itemdata);
+      setIsInWishlist(true);
+      setWishlistId(newDoc.id);
+      toast.success('Added to wishlist');
     }
   };
 
@@ -54,42 +93,29 @@ const View = () => {
               Premium quality. Carefully selected for your lifestyle. Add your full product details here.
             </p>
             <p className="text-md text-gray-500 mb-2">Price per Unit: ₹{priceValue.toFixed(2)}</p>
-
-            {/* Quantity Controls */}
-            <div className="flex items-center gap-4 mb-4">
-              <button
-                onClick={decrement}
-                className="text-2xl font-bold bg-gray-200 px-3 rounded hover:bg-gray-300"
-              >
-                −
-              </button>
-              <span className="text-xl font-medium">{quantity}</span>
-              <button
-                onClick={increment}
-                className="text-2xl font-bold bg-gray-200 px-3 rounded hover:bg-gray-300"
-              >
-                +
-              </button>
-            </div>
-
-            {/* Total Price */}
             <p className="text-xl text-blue-700 font-semibold mb-6">
               Total: ₹{totalPrice}
             </p>
           </div>
 
-          {/* Add to Cart Button */}
-          <button
-            onClick={handleAddToCart}
-            disabled={isInCart}
-            className={`mt-4 py-2 px-6 rounded font-semibold transition-all duration-300 ${
-              isInCart
-                ? 'bg-blue-600 text-white cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
-            }`}
-          >
-            {isInCart ? 'Added' : 'Add to Cart'}
-          </button>
+          {/* Action Buttons */}
+          <div className="flex gap-4">
+            <button
+              onClick={handleAddToCart}
+              className="w-full py-2 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded flex justify-center items-center gap-2"
+            >
+              <FaShoppingCart />
+              {quantity > 0 && <span>x{quantity}</span>}
+            </button>
+
+            <button
+              onClick={toggleWishlist}
+              className="w-full py-2 bg-pink-100 hover:bg-pink-200 text-pink-800 rounded flex justify-center items-center gap-2"
+            >
+              {isInWishlist ? <FaHeart /> : <FaRegHeart />}
+              <span>{isInWishlist ? 'Wishlisted' : 'Add to Wishlist'}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

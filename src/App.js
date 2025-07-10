@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Ensure you import styles
+import 'react-toastify/dist/ReactToastify.css';
 
 // Components
 import Header from './components/Header';
@@ -15,6 +15,7 @@ import Contact from './Pages/Contact';
 import Cart from './Pages/Cart';
 import View from './Pages/View';
 import Tickets from './Pages/Tickets';
+import Wishlist from './Pages/Wishlist'; // ✅ Import Wishlist Page
 
 function App() {
   return (
@@ -22,11 +23,7 @@ function App() {
       <BrowserRouter>
         <Header />
 
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          theme="colored"
-        />
+        <ToastContainer position="top-right" autoClose={3000} theme="colored" />
 
         <main className="flex-grow">
           <Routes>
@@ -37,6 +34,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/view" element={<View />} />
             <Route path="/tickets" element={<Tickets />} />
+            <Route path="/wishlist" element={<Wishlist />} /> {/* ✅ Route added */}
           </Routes>
         </main>
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { db, collection, getDocs } from '../firebase';
+import { db, collection, getDocs, deleteDoc, doc } from '../firebase';
 
 function Tickets() {
   const [tickets, setTickets] = useState([]);
@@ -12,6 +12,14 @@ function Tickets() {
     };
     fetchTickets();
   }, []);
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this ticket?");
+    if (confirmDelete) {
+      await deleteDoc(doc(db, 'contacts', id));
+      setTickets(tickets.filter(ticket => ticket.id !== id));
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-blue-100 py-10 px-4">
@@ -27,7 +35,7 @@ function Tickets() {
             {tickets.map((ticket) => (
               <div
                 key={ticket.id}
-                className="bg-white border-l-4 border-green-500 shadow-md rounded-lg p-6"
+                className="bg-white border-l-4 border-green-500 shadow-md rounded-lg p-6 relative"
               >
                 <p className="text-lg">
                   <span className="font-semibold text-gray-700">👤 Name:</span> {ticket.name}
@@ -38,6 +46,12 @@ function Tickets() {
                 <p className="text-lg">
                   <span className="font-semibold text-gray-700">💬 Message:</span> {ticket.message}
                 </p>
+                <button
+                  onClick={() => handleDelete(ticket.id)}
+                  className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
               </div>
             ))}
           </div>

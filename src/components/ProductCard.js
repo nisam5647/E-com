@@ -1,8 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FaShoppingCart } from 'react-icons/fa';
 
-function ProductCard({ product, onAddToCart }) {
+function ProductCard({ product, onAddToCart, cartItems }) {
   const { id, name, price, image } = product;
+
+  const cartItem = cartItems.find(item => item.id === id);
+  const quantity = cartItem?.quantity || 0;
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-lg overflow-hidden transition cursor-pointer">
@@ -13,15 +17,17 @@ function ProductCard({ product, onAddToCart }) {
           <p className="text-blue-600 font-medium mt-1">{price}</p>
         </div>
       </Link>
+
       <div className="px-4 pb-4">
         <button
           onClick={(e) => {
-            e.stopPropagation(); // Prevent Link from triggering
+            e.stopPropagation(); // Prevent navigating on icon click
             onAddToCart(product);
           }}
-          className="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+          className="relative w-full py-2 bg-blue-100 hover:bg-blue-200 text-blue-800 font-semibold rounded flex items-center justify-center gap-2"
         >
-          Add to Cart
+          <FaShoppingCart className="text-lg" />
+          {quantity > 0 ? `x${quantity}` : "Add"}
         </button>
       </div>
     </div>
